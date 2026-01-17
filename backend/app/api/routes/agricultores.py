@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, col, delete, func, select
 
 from app import crud
-from app.api.deps import SessionDep, get_current_active_superuser
+from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
 from app.core.config import settings
 from app.models import (
     Agricultor,
@@ -34,10 +34,13 @@ def read_agricultores(
 
 @router.post("/", response_model=AgricultorPublic)
 def create_agricultor(
-    *, session: SessionDep, agricultor_in: AgricultorCreate
+    *, session: SessionDep, agricultor_in: AgricultorCreate, current_user: CurrentUser
 ) -> Any:
     """Create new agricultor."""
-    agricultor = Agricultor.model_validate(agricultor_in)
+    # Attach the authenticated user to satisfy the required foreign key
+    agricultor = Agricultor.model_validate(
+        {**agricultor_in.model_dump(), "user_id": current_user.id}
+    )
     session.add(agricultor)
     session.commit()
     session.refresh(agricultor)
