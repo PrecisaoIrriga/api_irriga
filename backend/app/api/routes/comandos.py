@@ -48,6 +48,27 @@ def read_comando(comando_id: uuid.UUID, session: SessionDep) -> Any:
     return comando
 
 
+@router.get("/controlador/{controlador_id}", response_model=ComandosPublic)
+def read_comandos_por_controlador(
+    controlador_id: uuid.UUID, session: SessionDep, skip: int = 0, limit: int = 100
+) -> Any:
+    """Get all comandos for a specific controlador (pendentes ou não)."""
+    count_statement = select(func.count()).select_from(Comando).where(
+        Comando.controlador_id == controlador_id,
+        Comando.status == "pendente",
+    )
+    count = session.exec(count_statement).one()
+
+    statement = (
+        select(Comando)
+        .where(Comando.controlador_id == controlador_id , Comando.status == "pendente")
+        .offset(skip)
+        .limit(limit)
+    )
+    comandos = session.exec(statement).all()
+
+    return ComandosPublic(data=comandos, count=count)
+
 @router.patch(
     "/{comando_id}",
     dependencies=[Depends(get_current_active_superuser)],
