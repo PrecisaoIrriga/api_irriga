@@ -99,7 +99,9 @@ class Agricultor(AgricultorBase, table=True):
     localizacao: str | None = Field(default=None, max_length=255)
 
 class AgricultorPublic(AgricultorBase):
-    pass
+    id: uuid.UUID
+    user_id: uuid.UUID
+    localizacao: str | None
 
 class AgricultoresPublic(SQLModel):
     data: list[AgricultorPublic]
@@ -124,7 +126,7 @@ class Setor(SetorBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 class SetorPublic(SetorBase):
-    pass
+    id: uuid.UUID
 
 class SetoresPublic(SQLModel):
     data: list[SetorPublic]
