@@ -152,7 +152,7 @@ class Aparelho(AparelhoBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 class AparelhoPublic(AparelhoBase):
-    pass
+    id: uuid.UUID
 
 class AparelhosPublic(SQLModel):
     data: list[AparelhoPublic]
@@ -178,7 +178,7 @@ class Controlador(ControladoresBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 class ControladorPublic(ControladoresBase):
-    pass
+    id: uuid.UUID
 
 class ControladoresPublic(SQLModel):
     data: list[ControladorPublic]
@@ -214,7 +214,8 @@ class Comando(ComandoBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
 class ComandoPublic(ComandoBase):
-    pass
+    id: uuid.UUID
+
 
 class ComandosPublic(SQLModel):
     data: list[ComandoPublic]
